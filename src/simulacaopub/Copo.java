@@ -1,22 +1,30 @@
 package simulacaopub;
 
 public class Copo {
-    final static int LIVRE = 1;
-    final static int VAZIO = 2;
-    final static int ENCHENDO = 3;
-    final static int CHEIO = 4;
-    final static int SECANDO = 5;
+    final static int LIVRE = 0;
+    final static int VAZIO = 1;
+    final static int ENCHENDO = 2;
+    final static int CHEIO = 3;
+    final static int SECANDO = 4;
     
     
-    private int statusAtual;
-    private long timerEnchendo;
-    private long timerSecando;
+    private int statusAtual=0;
+    private long timerEnchendo=0;
+    private long timerSecando=0;
 
     public int getStatusAtual() {
         return statusAtual;
     }
 
     public void setStatusAtual(int statusAtual) {
+        switch(statusAtual){
+            case(Copo.ENCHENDO):
+                setTimerEnchendo(System.currentTimeMillis());
+                break;
+            case(Copo.SECANDO):
+                setTimerSecando(System.currentTimeMillis());
+                break;                
+        }
         this.statusAtual = statusAtual;
     }
 
@@ -24,7 +32,7 @@ public class Copo {
         return timerEnchendo;
     }
 
-    public void setTimerEnchendo(long timerEnchendo) {
+    private void setTimerEnchendo(long timerEnchendo) {
         this.timerEnchendo = timerEnchendo;
     }
 
@@ -32,7 +40,7 @@ public class Copo {
         return timerSecando;
     }
 
-    public void setTimerSecando(long timerSecando) {
+    private void setTimerSecando(long timerSecando) {
         this.timerSecando = timerSecando;
     }
     

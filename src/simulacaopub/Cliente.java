@@ -6,7 +6,7 @@ public class Cliente {
     final static int COPO_ENCHENDO = 3;
     final static int COPO_CHEIO = 4;
     final static int BEBENDO = 5;
-    final static int BEBER_TERMINOU = 6;
+    final static int TERMINOU_BEBER = 6;
     
     
     private int statusAtual;
