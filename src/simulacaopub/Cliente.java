@@ -7,13 +7,12 @@ public class Cliente {
     final static int COPO_CHEIO = 4;
     final static int BEBENDO = 5;
     final static int TERMINOU_BEBER = 6;
-    
-    
+     
     private int statusAtual=Cliente.AGUARDANDO_COPO;
     private long timerCopoEnchendo;
     private long timerBebendo;
     private long timerBeberTerminou;
-
+    
     public int getStatusAtual() {
         return statusAtual;
     }

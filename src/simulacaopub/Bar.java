@@ -1,21 +1,21 @@
 package simulacaopub;
 
 public class Bar {
-    final int tempoEncher = 3;
-    final int tempoBeber = 4;
+    private final int tempoEncher = 3;
+    private final int tempoBeber = 4;
 
-    final int quantClientes = 3;
-    final int quantCopos = 3;
-    final int quantGarcom = 1;
+    private final int quantClientes = 3;
+    private final int quantCopos = 3;
+    private final int quantGarcom = 1;
     
     private Copo copos[];
-    public Cliente clientes[];
+    private Cliente clientes[];
     private Garconete gr[];
     
     public Bar(){
-        this.clientes = new Cliente[quantClientes];
-        copos = new Copo[quantCopos];        
-        gr = new Garconete[quantGarcom];
+        inicializarClientes();
+        inicializarCopos();
+        inicializarGarcons();
     }
     
     public int getQuantCoposLivres(){
@@ -98,12 +98,45 @@ public class Bar {
         return quantGarcom;
     }
     
+    public Copo getCopoLivre(){
+        for(int i=0; i<this.copos.length; i++){
+            if(this.copos[i].getStatusAtual()==Copo.LIVRE){
+                return this.copos[i];
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    public String toString(){
+        String texto = "";
+        texto+=(getQuantClientesAguardandoCopo()+" clientes aguardando copo\n");
+        texto+=(getQuantCoposLivres()+" copos livres\n");
+        texto+=(getQuantGarcomLivre()+ " garçons livres");
+        return texto;
+    }
+    
     private void inicializarClientes(){
         this.clientes = new Cliente[quantClientes];
-        for(Cliente cliente : this.clientes){
-            cliente = new Cliente();
+        for(int i=0; i<this.clientes.length; i++){
+            this.clientes[i] = new Cliente();
         }
     }
+    
+    private void inicializarCopos(){
+        this.copos = new Copo[quantCopos];
+        for(int i=0; i<this.copos.length; i++){
+            this.copos[i] = new Copo();
+        }
+    }
+    
+    private void inicializarGarcons(){
+        this.gr = new Garconete[quantGarcom];
+        for(int i=0; i<this.gr.length; i++){
+            this.gr[i] = new Garconete();
+        }
+    }
+    
 }
 
 
