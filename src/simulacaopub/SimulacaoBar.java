@@ -6,15 +6,16 @@ import java.util.logging.Logger;
 public class SimulacaoBar {
 
     public static void main(String[] args) {        
-        Bar b = new Bar();
+        Bar bar = new Bar();
         long tempoInicial = System.currentTimeMillis();
+        Thread t = new Thread(bar);
         while(true){
             System.out.println("Tempo "+((System.currentTimeMillis()-tempoInicial)/1000));
-            System.out.println(b);
-//            System.out.println(b.getQuantClientesAguardandoCopo()+" clientes aguardando copo");
-//            System.out.println(b.getQuantCoposLivres()+" copos livres");
-//            System.out.println(b.getQuantGarcomLivre()+ " garçons livres");
+            System.out.println(bar);
             imprimirLinhaPontilhada();
+            if(t.getState()==Thread.State.NEW){
+                t.start();
+            }
             try {
             Thread.sleep(1000);
             } catch (InterruptedException ex) {
@@ -22,7 +23,6 @@ public class SimulacaoBar {
             }
         }
     }
-    
     
     private static void imprimirLinhaPontilhada(){
         System.out.println("-------------------------------------------------");

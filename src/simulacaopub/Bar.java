@@ -1,6 +1,6 @@
 package simulacaopub;
 
-public class Bar {
+public class Bar implements Runnable{
     private final int tempoEncher = 3;
     private final int tempoBeber = 4;
 
@@ -107,6 +107,33 @@ public class Bar {
         return null;
     }
     
+    public Cliente getClienteAguardandoCopo(){
+        for(int i=0; i<this.clientes.length; i++){
+            if(this.clientes[i].getStatusAtual()==Cliente.AGUARDANDO_COPO){
+                return this.clientes[i];
+            }
+        }
+        return null;
+    }
+    
+    public Cliente getClienteAguardandoGarcom(){
+        for(int i=0; i<this.clientes.length; i++){
+            if(this.clientes[i].getStatusAtual()==Cliente.AGUARDANDO_GARCOM){
+                return this.clientes[i];
+            }
+        }
+        return null;
+    }
+    
+    public Garconete getGarcomLivre(){
+        for(int i=0; i<this.gr.length; i++){
+            if(this.gr[i].getStatusAtual()==Garconete.LIVRE){
+                return this.gr[i];
+            }
+        }
+        return null;
+    }
+    
     @Override
     public String toString(){
         String texto = "";
@@ -134,6 +161,20 @@ public class Bar {
         this.gr = new Garconete[quantGarcom];
         for(int i=0; i<this.gr.length; i++){
             this.gr[i] = new Garconete();
+        }
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            if(getQuantClientesAguardandoCopo()>=1 && getQuantCoposLivres()>=1){
+                getCopoLivre().setStatusAtual(Copo.VAZIO);
+                getClienteAguardandoCopo().setStatusAtual(Cliente.AGUARDANDO_GARCOM);
+            }
+            if(getQuantClientesAguardandoGarcom()>=1 || getQuantGarcomLivre()>=1){
+                getClienteAguardandoGarcom().setStatusAtual(Cliente.COPO_ENCHENDO);
+                
+            }
         }
     }
     
