@@ -1,6 +1,6 @@
 package simulacaopub;
 
-public class Pub {
+public class Bar {
     final int tempoEncher = 3;
     final int tempoBeber = 4;
 
@@ -8,9 +8,15 @@ public class Pub {
     final int quantCopos = 3;
     final int quantGarcom = 1;
     
-    Copo copos[] = new Copo[quantCopos];
-    Cliente clientes[] = new Cliente[quantClientes];
-    Garconete gr[] = new Garconete[quantGarcom];
+    private Copo copos[];
+    public Cliente clientes[];
+    private Garconete gr[];
+    
+    public Bar(){
+        this.clientes = new Cliente[quantClientes];
+        copos = new Copo[quantCopos];        
+        gr = new Garconete[quantGarcom];
+    }
     
     public int getQuantCoposLivres(){
         int quantCoposLivre = 0;
@@ -43,13 +49,13 @@ public class Pub {
     }
     
     public int getQuantClientesAguardandoCopo(){
-        int quantClientes = 0;
-        for(int i=0; i<clientes.length; i++){
-            if(clientes[i].getStatusAtual()==Cliente.AGUARDANDO_COPO){
-                quantClientes++;
+        int quantClientesAguardando = 0;
+        for (Cliente cliente : this.clientes) {
+            if (cliente.getStatusAtual() == Cliente.AGUARDANDO_COPO) {
+                quantClientesAguardando++;
             }
         }
-        return quantClientes;
+        return quantClientesAguardando;
     }
     
     public int getQuantClientesAguardandoGarcom(){
@@ -91,4 +97,13 @@ public class Pub {
         }
         return quantGarcom;
     }
+    
+    private void inicializarClientes(){
+        this.clientes = new Cliente[quantClientes];
+        for(Cliente cliente : this.clientes){
+            cliente = new Cliente();
+        }
+    }
 }
+
+

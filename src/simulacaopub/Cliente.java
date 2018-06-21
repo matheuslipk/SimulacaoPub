@@ -9,7 +9,7 @@ public class Cliente {
     final static int TERMINOU_BEBER = 6;
     
     
-    private int statusAtual;
+    private int statusAtual=Cliente.AGUARDANDO_COPO;
     private long timerCopoEnchendo;
     private long timerBebendo;
     private long timerBeberTerminou;
@@ -44,5 +44,10 @@ public class Cliente {
 
     public void setTimerBeberTerminou(long timerBeberTerminou) {
         this.timerBeberTerminou = timerBeberTerminou;
+    }
+    
+    public static void main(String arg[]){
+        Cliente c = new Cliente();
+        System.out.println(c.getStatusAtual());
     }
 }
