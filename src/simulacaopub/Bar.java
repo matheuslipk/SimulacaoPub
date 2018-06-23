@@ -1,21 +1,23 @@
 package simulacaopub;
 
 public class Bar implements Runnable{
-    private final int tempoEncher = 3;
-    private final int tempoBeber = 4;
+    static final long TEMPO_ENCHER_COPO = 3000;
+    static final long TEMPO_BEBER = 4000;
 
     private final int quantClientes = 3;
     private final int quantCopos = 3;
     private final int quantGarcom = 1;
     
+    private final long tempoInicial;
     private Copo copos[];
     private Cliente clientes[];
-    private Garconete gr[];
+    private Garcom gr[];
     
     public Bar(){
         inicializarClientes();
         inicializarCopos();
         inicializarGarcons();
+        this.tempoInicial = System.currentTimeMillis();
     }
     
     public int getQuantCoposLivres(){
@@ -59,19 +61,59 @@ public class Bar implements Runnable{
     }
     
     public int getQuantClientesAguardandoGarcom(){
-        int quantClientes = 0;
+        int quantClientesAguardando = 0;
         for(int i=0; i<clientes.length; i++){
             if(clientes[i].getStatusAtual()==Cliente.AGUARDANDO_GARCOM){
-                quantClientes++;
+                quantClientesAguardando++;
             }
         }
-        return quantClientes;
+        return quantClientesAguardando;
+    }
+    
+    public int getQuantClientesCopoEnchendo(){
+        int quantClientesCopoEnchendo = 0;
+        for(int i=0; i<clientes.length; i++){
+            if(clientes[i].getStatusAtual()==Cliente.COPO_ENCHENDO){
+                quantClientesCopoEnchendo++;
+            }
+        }
+        return quantClientesCopoEnchendo;
+    }
+    
+    public int getQuantClientesTerminouEncher(){
+        int quantClientesTerminouEncher = 0;
+        for(int i=0; i<clientes.length; i++){
+            if(clientes[i].getStatusAtual()==Cliente.COPO_ENCHENDO && (System.currentTimeMillis() - this.clientes[i].getTimerCopoEnchendo())>=Bar.TEMPO_ENCHER_COPO){
+                quantClientesTerminouEncher++;
+            }
+        }
+        return quantClientesTerminouEncher;
+    }
+    
+    public int getQuantClientesCopoCheio(){
+        int quantClientesCopoCheio = 0;
+        for(int i=0; i<clientes.length; i++){
+            if(clientes[i].getStatusAtual()==Cliente.COPO_CHEIO){
+                quantClientesCopoCheio++;
+            }
+        }
+        return quantClientesCopoCheio;
+    }
+    
+    public int getQuantClientesBebendo(){
+        int quantClientesCopoCheio = 0;
+        for(int i=0; i<clientes.length; i++){
+            if(clientes[i].getStatusAtual()==Cliente.BEBENDO){
+                quantClientesCopoCheio++;
+            }
+        }
+        return quantClientesCopoCheio;
     }
     
     public int getQuantClientesTerminouBeber(){
         int quantClientes = 0;
         for(int i=0; i<clientes.length; i++){
-            if(clientes[i].getStatusAtual()==Cliente.TERMINOU_BEBER){
+            if(clientes[i].getStatusAtual()==Cliente.BEBENDO && (System.currentTimeMillis() - this.clientes[i].getTimerBebendo())>=Bar.TEMPO_BEBER){
                 quantClientes++;
             }
         }
@@ -81,17 +123,27 @@ public class Bar implements Runnable{
     public int getQuantGarcomLivre(){
         int quantGarcom = 0;
         for(int i=0; i<this.gr.length; i++){
-            if(gr[i].getStatusAtual()==Garconete.LIVRE){
+            if(gr[i].getStatusAtual()==Garcom.LIVRE){
                 quantGarcom++;
             }
         }
         return quantGarcom;
     }
     
-    public int getQuantGarcomOcupado(){
+    public int getQuantGarcomEnchendoCopo(){
         int quantGarcom = 0;
         for(int i=0; i<this.gr.length; i++){
-            if(gr[i].getStatusAtual()==Garconete.OCUPADO){
+            if(gr[i].getStatusAtual()==Garcom.ENCHENDO_COPO){
+                quantGarcom++;
+            }
+        }
+        return quantGarcom;
+    }
+    
+    public int getQuantGarcomTerminouEncher(){
+        int quantGarcom = 0;
+        for(int i=0; i<this.gr.length; i++){
+            if(gr[i].getStatusAtual()==Garcom.ENCHENDO_COPO && (System.currentTimeMillis() - gr[i].getTimerEnchendoCopo())>=Bar.TEMPO_ENCHER_COPO){
                 quantGarcom++;
             }
         }
@@ -110,6 +162,7 @@ public class Bar implements Runnable{
     public Cliente getClienteAguardandoCopo(){
         for(int i=0; i<this.clientes.length; i++){
             if(this.clientes[i].getStatusAtual()==Cliente.AGUARDANDO_COPO){
+//                System.out.println(this.clientes[i]+" copo");
                 return this.clientes[i];
             }
         }
@@ -125,9 +178,45 @@ public class Bar implements Runnable{
         return null;
     }
     
-    public Garconete getGarcomLivre(){
+    public Cliente getClienteTerminouEncher(){
+        for(int i=0; i<this.clientes.length; i++){
+            if(this.clientes[i].getStatusAtual()==Cliente.COPO_ENCHENDO && (System.currentTimeMillis() - this.clientes[i].getTimerCopoEnchendo()) >=Bar.TEMPO_ENCHER_COPO){
+                return this.clientes[i];
+            }
+        }
+        return null;
+    }
+    
+    public Cliente getClienteCopoCheio(){
+        for(int i=0; i<this.clientes.length; i++){
+            if(this.clientes[i].getStatusAtual()==Cliente.COPO_CHEIO){
+                return this.clientes[i];
+            }
+        }
+        return null;
+    }
+    
+    public Cliente getClienteTerminouBeber(){
+        for(int i=0; i<this.clientes.length; i++){
+            if(this.clientes[i].getStatusAtual()==Cliente.BEBENDO && (System.currentTimeMillis() - this.clientes[i].getTimerBebendo()) >=Bar.TEMPO_BEBER){
+                return this.clientes[i];
+            }
+        }
+        return null;
+    }
+    
+    public Garcom getGarcomLivre(){
         for(int i=0; i<this.gr.length; i++){
-            if(this.gr[i].getStatusAtual()==Garconete.LIVRE){
+            if(this.gr[i].getStatusAtual()==Garcom.LIVRE){
+                return this.gr[i];
+            }
+        }
+        return null;
+    }
+    
+    public Garcom getGarcomEnchendoCopo(){
+        for(int i=0; i<this.gr.length; i++){
+            if(this.gr[i].getStatusAtual()==Garcom.ENCHENDO_COPO){
                 return this.gr[i];
             }
         }
@@ -136,8 +225,12 @@ public class Bar implements Runnable{
     
     @Override
     public String toString(){
-        String texto = "";
-        texto+=(getQuantClientesAguardandoCopo()+" clientes aguardando copo\n");
+        String texto = "----------------------------------------------\n";
+        texto+="Tempo (s): "+(((System.currentTimeMillis()-this.tempoInicial)/1000)+"\n");
+        texto+=("CLIENTES\n"+getQuantClientesAguardandoCopo()+" aguardando copo && ");
+        texto+=(getQuantClientesAguardandoGarcom()+" aguardando garçom && ");
+        texto+=(getQuantClientesCopoEnchendo()+" copo enchendo && ");
+        texto+=(getQuantClientesBebendo()+ " bebendo\n");
         texto+=(getQuantCoposLivres()+" copos livres\n");
         texto+=(getQuantGarcomLivre()+ " garçons livres");
         return texto;
@@ -146,7 +239,7 @@ public class Bar implements Runnable{
     private void inicializarClientes(){
         this.clientes = new Cliente[quantClientes];
         for(int i=0; i<this.clientes.length; i++){
-            this.clientes[i] = new Cliente();
+            this.clientes[i] = new Cliente("Cliente "+i);
         }
     }
     
@@ -158,9 +251,9 @@ public class Bar implements Runnable{
     }
     
     private void inicializarGarcons(){
-        this.gr = new Garconete[quantGarcom];
+        this.gr = new Garcom[quantGarcom];
         for(int i=0; i<this.gr.length; i++){
-            this.gr[i] = new Garconete();
+            this.gr[i] = new Garcom();
         }
     }
 
@@ -170,11 +263,32 @@ public class Bar implements Runnable{
             if(getQuantClientesAguardandoCopo()>=1 && getQuantCoposLivres()>=1){
                 getCopoLivre().setStatusAtual(Copo.VAZIO);
                 getClienteAguardandoCopo().setStatusAtual(Cliente.AGUARDANDO_GARCOM);
+                System.out.println(this);
             }
-            if(getQuantClientesAguardandoGarcom()>=1 || getQuantGarcomLivre()>=1){
-                getClienteAguardandoGarcom().setStatusAtual(Cliente.COPO_ENCHENDO);
-                
+            if(getQuantClientesAguardandoGarcom()>=1 && getQuantGarcomLivre()>=1){
+                getClienteAguardandoGarcom().setStatusAtual(Cliente.COPO_ENCHENDO);    
+                getGarcomLivre().setStatusAtual(Garcom.ENCHENDO_COPO);
+                System.out.println(this);
             }
+            if(getQuantGarcomTerminouEncher()>=1 && getQuantClientesTerminouEncher()>=1){
+               getGarcomEnchendoCopo().setStatusAtual(Garcom.LIVRE);
+               getClienteTerminouEncher().setStatusAtual(Cliente.COPO_CHEIO);
+               System.out.println(this);
+            }
+            if(getQuantClientesCopoCheio()>=1){
+               getClienteCopoCheio().setStatusAtual(Cliente.BEBENDO);
+               System.out.println(this);
+            }
+            if(getQuantClientesTerminouBeber()>=1){
+               getClienteTerminouBeber().setStatusAtual(Cliente.AGUARDANDO_GARCOM);
+               System.out.println(this);
+            }
+            
+            
+//           try {
+//              Thread.sleep(1);
+//           } catch (InterruptedException ex) {
+//           }
         }
     }
     

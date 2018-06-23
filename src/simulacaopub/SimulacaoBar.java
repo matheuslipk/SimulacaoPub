@@ -9,10 +9,16 @@ public class SimulacaoBar {
         Bar bar = new Bar();
         long tempoInicial = System.currentTimeMillis();
         Thread t = new Thread(bar);
+        System.out.println("Informações Gerais");
+        System.out.println(bar.getQuantClientesAguardandoCopo()+" clientes");
+        System.out.println(bar.getQuantCoposLivres()+ " copos");
+        System.out.println(bar.getQuantGarcomLivre()+" garçom");
+        imprimirLinhaPontilhada();
+        imprimirLinhaPontilhada();
         while(true){
-            System.out.println("Tempo "+((System.currentTimeMillis()-tempoInicial)/1000));
-            System.out.println(bar);
-            imprimirLinhaPontilhada();
+//            System.out.println("Tempo "+((System.currentTimeMillis()-tempoInicial)));
+//            System.out.println(bar);
+//            imprimirLinhaPontilhada();
             if(t.getState()==Thread.State.NEW){
                 t.start();
             }
